@@ -39,6 +39,7 @@
             <th>Status</th>
             <th>Date Added</th>
             <th>Borrower_ID</th>
+            <th>EDIT</th>
         </tr>
         {% for facility in content.facilities %}
         <tr>
@@ -47,6 +48,7 @@
             <td>{{ facility.status }}</td>
             <td>{{ facility.date_added }}</td>
             <td>{{ facility.borrower_id }}</td>
+            <td><a href="/edit_facility/{{ facility.id }}">EDIT</a></td>
         </tr>
         {% endfor %}
     </table>
