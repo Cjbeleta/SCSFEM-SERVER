@@ -1,6 +1,6 @@
 <html>
 <title>
-    Edit Facility
+    Add Equipment
 </title>
 
 <head>
@@ -15,23 +15,16 @@
 </head>
 
 <body>
-    <form action="/edit_facility/{{ facility.id }}" method="POST">
-        <label>Name: </label><input name="name" value="{{ facility.name }}" type="text">
+    <form action="/add_equipment/" method="POST">
+        <label>Name: </label><input name="name" type="text">
         <br>
         <label>Status: </label>
         <br>
-        {% if facility.status == 1 %}
         <input type="radio" name="status" value="1" checked><label>Available</label>
         <br>
         <input type="radio" name="status" value="0"><label>Hidden</label>
-        {% endif %}
-        {% if facility.status == 0 %}
-        <input type="radio" name="status" value="1"><label>Available</label>
         <br>
-        <input type="radio" name="status" value="0" checked><label>Hidden</label>
-        {% endif %}
-        <br>
-        <button type="submit"> SAVE </button>
+        <button type="submit"> ADD </button>
     </form>
 </body>
 
