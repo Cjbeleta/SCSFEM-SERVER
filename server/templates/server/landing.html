@@ -2,9 +2,10 @@
     <title>Home</title>
     <head></head>
     <body>
-        <a href="/facility">FACILITIES</a>
-        <br>
-        <a href="/equipment">EQUIPMENT</a>
-        <br>
+        {% if user.is_authenticated %}
+            <p class="display-4">Hello, {{ user.username }}</p>
+        {% else %}
+            <a class="lead" href="{% url 'login' %}">Log in</a>
+        {% endif %}
     </body>
 </html>
