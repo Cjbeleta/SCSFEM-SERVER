@@ -4,11 +4,16 @@ from . import views
 
 urlpatterns = [
     # login route
-    path('login/', social_views.LoginView.as_view(), name='login'),
+    # path('login/', social_views.LoginView.as_view(), name='login'),
     # logout route
-    path('logout/', social_views.LogoutView.as_view(), name='logout'),
+    # path('logout/', social_views.LogoutView.as_view(), name='logout'),
     # auth route
-    path('auth/', include('social_django.urls')),
+    # path('auth/', include('social_django.urls')),
+
+    # test login route
+    path('login/', views.login),
+    # test logout route
+    path('logout/', views.logout),
     # landing route
     path('', views.landing, name='landing'),
     # dashboard route

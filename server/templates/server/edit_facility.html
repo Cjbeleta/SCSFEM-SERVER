@@ -16,6 +16,7 @@
 
 <body>
     <form action="/edit_facility/{{ facility.id }}" method="POST">
+        {% csrf_token %}
         <label>Name: </label><input name="name" value="{{ facility.name }}" type="text">
         <br>
         <label>Status: </label>

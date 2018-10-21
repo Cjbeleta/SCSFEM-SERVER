@@ -1,27 +1,56 @@
 from django.shortcuts import render, redirect
 import requests
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import authenticate, login as django_login
+from django.http import HttpResponse
 
 # Create your views here.
 
-@csrf_exempt
 def landing(request):
     return render(request, 'server/landing.html')
 
 @csrf_exempt
-def dashboard(request):
-    return render(request, 'server/dashboard.html')
+def login(request):
+    if request.method == 'POST':
+        # data = {'token': request.POST['token'], 'ttl': request.POST['ttl']}
+        # response = requests.post('http://localhost:8000/api/token/', data=data)
+        url = 'http://localhost:8000/api/superadmin?email=' + request.POST['email']
+        # print (url)
+        response = requests.get(url)
+        data = response.json()
+        print (data)
+        if data:
+            request.session['user_id'] = data[0]['id']
+            request.session['user_name'] = data[0]['name']
+            request.session['user_email'] = data[0]['email']
+            request.session['logged_in'] = True
+            # django_login(request, data[0], backend='social_core.backends.google.GoogleOAuth2')
+        return HttpResponse('ok')
+    else:
+        return redirect(landing)
 
-@csrf_exempt
+# @login_required
+def logout(request):
+    return redirect(landing)
+
+
+def dashboard(request):
+    if request.session['logged_in']:
+        return render(request, 'server/dashboard.html', {'username': request.session['user_name']})
+    else:
+        return redirect(landing)
+
+# @login_required
 def facility(request):
     facilities = requests.get('http://localhost:8000/api/facility/')
     return render(request, 'server/facility.html', {'facilities': facilities.json()})
 
-@csrf_exempt
+# @login_required
 def view_facility(request):
     return render(request, 'server/view_facility.html')
 
-@csrf_exempt
+# @login_required
 def add_facility(request):
     if request.method == 'POST':
         data = {'name': request.POST['name'], 'status': request.POST['status']}
@@ -32,7 +61,7 @@ def add_facility(request):
     elif request.method == 'GET':
         return render(request, 'server/add_facility.html')
 
-@csrf_exempt
+# @login_required
 def edit_facility(request, pk):
     if request.method == 'GET':
         url = 'http://localhost:8000/api/facility/' + pk + '/'
@@ -48,12 +77,12 @@ def edit_facility(request, pk):
         edited_facility = requests.put(url, data=data)
         return redirect(facility)
 
-@csrf_exempt
+# @login_required
 def equipment(request):
     equipments = requests.get('http://localhost:8000/api/equipment/')
     return render(request, 'server/equipment.html', {'equipments': equipments.json()})
 
-@csrf_exempt
+# @login_required
 def add_equipment(request):
     if request.method == 'POST':
         data = {'name': request.POST['name'], 'status': request.POST['status']}
@@ -63,7 +92,8 @@ def add_equipment(request):
         return redirect(equipment)
     elif request.method == 'GET':
         return render(request, 'server/add_equipment.html')
-@csrf_exempt
+
+# @login_required
 def edit_equipment(request, pk):
     if request.method == 'GET':
         url = 'http://localhost:8000/api/equipment/' + pk + '/'

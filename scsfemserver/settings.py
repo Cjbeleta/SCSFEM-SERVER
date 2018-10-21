@@ -27,6 +27,10 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+CORS_ORIGIN_WHITELIST = (
+    'http://localhost:5000',
+    'http://localhost:8000'
+)
 
 # Application definition
 
@@ -89,6 +93,7 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'wS7AoZPuflqw06-SuQkpvAQe' #Paste Secret Key
 
 WSGI_APPLICATION = 'scsfemserver.wsgi.application'
 
+SOCIAL_AUTH_POSTGRES_JSONFIELD = True
 
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases

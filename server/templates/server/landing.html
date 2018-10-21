@@ -1,11 +1,61 @@
+<!DOCTYPE html>
 <html>
-    <title>Home</title>
-    <head></head>
-    <body>
-        {% if user.is_authenticated %}
-            <p class="display-4">Hello, {{ user.username }}</p>
-        {% else %}
-            <a class="lead" href="{% url 'login' %}">Log in</a>
-        {% endif %}
-    </body>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="google-signin-client_id" content="15454486122-jo6l63u3n5di3vgv0op9ujf7mcvprcc5.apps.googleusercontent.com">
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    
+</head>
+<body>
+    <div class="g-signin2" data-onsuccess="onSignIn"></div>
+    <br>
+    <a href="#" onclick="signOut();">Sign out</a>
+</body>
 </html>
+
+<script>
+
+    function onSignIn(googleUser) {
+        var profile = googleUser.getBasicProfile();
+        console.log('Token ID: ' + googleUser.getAuthResponse().id_token);
+        console.log('Token Type: ' + googleUser.getAuthResponse().token_type);
+        console.log('Expires In: ' + googleUser.getAuthResponse().expires_in);
+        console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+        console.log('Name: ' + profile.getName());
+        console.log('Image URL: ' + profile.getImageUrl());
+        console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+
+        var name = profile.getName();
+        var email = profile.getEmail();
+        var token = googleUser.getAuthResponse().id_token;
+        var ttl = googleUser.getAuthResponse().expires_in;
+
+        $.ajax({
+            type: 'POST',
+            url: 'http://localhost:5000/login/',
+            data: {
+            	'fullname': name,
+            	'email': email,
+            	'token': token,
+            	'ttl': ttl
+            },
+            success: function(resp) {
+                location.replace('/dashboard');
+            },
+            error: function(e) {
+                console.log('Error: ' + JSON.stringify(e));
+            }
+        });
+    }
+
+    function signOut() {
+        var auth2 = gapi.auth2.getAuthInstance();
+        auth2.signOut().then(function () {
+        console.log('User signed out.');
+        });
+  }
+</script>

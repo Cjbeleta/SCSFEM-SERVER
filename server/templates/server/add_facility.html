@@ -15,7 +15,8 @@
 </head>
 
 <body>
-    <form action="/add_facility" method="POST">
+    <form action="/add_facility/" method="POST">
+        {% csrf_token %}
         <label>Name: </label><input name="name" type="text">
         <br>
         <label>Status: </label>
