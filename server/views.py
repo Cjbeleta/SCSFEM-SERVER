@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 import requests
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import authenticate, login as django_login
+from django.contrib.auth import authenticate, logout as django_logout
 from django.http import HttpResponse
 
 # Create your views here.
@@ -16,7 +16,6 @@ def login(request):
         # data = {'token': request.POST['token'], 'ttl': request.POST['ttl']}
         # response = requests.post('http://localhost:8000/api/token/', data=data)
         url = 'http://localhost:8000/api/superadmin?email=' + request.POST['email']
-        # print (url)
         response = requests.get(url)
         data = response.json()
         print (data)
@@ -24,14 +23,45 @@ def login(request):
             request.session['user_id'] = data[0]['id']
             request.session['user_name'] = data[0]['name']
             request.session['user_email'] = data[0]['email']
+            request.session['user_type'] = 'superadmin'
             request.session['logged_in'] = True
-            # django_login(request, data[0], backend='social_core.backends.google.GoogleOAuth2')
+        else:
+            url = 'http://localhost:8000/api/subadmin?email=' + request.POST['email']
+            response = requests.get(url)
+            data = response.json()
+            print (data)
+            if data:
+                request.session['user_id'] = data[0]['id']
+                request.session['user_name'] = data[0]['name']
+                request.session['user_email'] = data[0]['email']
+                request.session['user_type'] = 'superadmin'
+                request.session['logged_in'] = True
+            else:
+                url = 'http://localhost:8000/api/borrower?email=' + request.POST['email']
+                response = requests.get(url)
+                data = response.json()
+                print (data)
+                if data:
+                    request.session['user_id'] = data[0]['id']
+                    request.session['user_name'] = data[0]['name']
+                    request.session['user_email'] = data[0]['email']
+                    request.session['user_type'] = 'superadmin'
+                    request.session['logged_in'] = True
+                else:
+                    url = 'http://localhost:8000/api/borrower'
+                    response = requests.post(url, {'name': request.POST['fullname'], 'email': request.POST['email']})
+                    request.session['user_id'] = data[0]['id']
+                    request.session['user_name'] = data[0]['name']
+                    request.session['user_email'] = data[0]['email']
+                    request.session['user_type'] = 'superadmin'
+                    request.session['logged_in'] = True
         return HttpResponse('ok')
     else:
         return redirect(landing)
 
 # @login_required
 def logout(request):
+    django_logout(request)
     return redirect(landing)
 
 
