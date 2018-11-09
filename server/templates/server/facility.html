@@ -1,59 +1,29 @@
-<html>
-<title>FACILITY</title>
+{% extends 'server/master.html' %}
 
-<head>
-    <style>
-        table {
-            font-family: arial, sans-serif;
-            border-collapse: collapse;
-            width: 100%;
-        }
-
-        td,
-        th {
-            border: 1px solid #dddddd;
-            text-align: left;
-            padding: 8px;
-        }
-
-        h1,
-        h2,
-        h3,
-        h4,
-        h5,
-        h6, a {
-            font-family: arial, sans-serif;
-            margin: 5px;
-        }
-    </style>
-</head>
-
-<body>
-    <h1>FACILITY LIST</h1>
-    <br>
-    <a href="/dashboard">HOME</a><a href="/add_facility">ADD FACILITY</a>
-    <br>
-    <table>
-        <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Status</th>
-            <th>Date Added</th>
-            <th>Borrower_ID</th>
-            <th>EDIT</th>
-        </tr>
-        {% for facility in facilities %}
-        <tr>
-            <td>{{ facility.id }}</td>
-            <td>{{ facility.name }}</td>
-            <td>{{ facility.status }}</td>
-            <td>{{ facility.date_added }}</td>
-            <td>{{ facility.borrower_id }}</td>
-            <td><a href="/edit_facility/{{ facility.id }}">EDIT</a></td>
-        </tr>
-        {% endfor %}
-    </table>
-
-</body>
-
-</html>
+    {% block title %}
+    Facility
+    {% endblock %}
+    
+    {% block content %}
+        <a href="/add_facility"><button class="btn-primary"><span class="fa fa-plus"></span> ADD FACILITY</button></a>
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Status</th>
+                <th>Date Added</th>
+                <th>Borrower_ID</th>
+                <th>EDIT</th>
+            </tr>
+            {% for facility in facilities %}
+            <tr>
+                <td>{{ facility.id }}</td>
+                <td>{{ facility.name }}</td>
+                <td>{{ facility.status }}</td>
+                <td>{{ facility.date_added }}</td>
+                <td>{{ facility.borrower_id }}</td>
+                <td><a href="/edit_facility/{{ facility.id }}"><span class="fa fa-edit"></span> EDIT</a></td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% endblock %}

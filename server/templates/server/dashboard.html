@@ -1,18 +1,9 @@
-<html>
-<title>Dashboard</title>
+{% extends 'server/master.html' %}
 
-<head>
+{% block title %}
+Home
+{% endblock %}
 
-</head>
+{% block content %}
 
-<body>
-        <p class="display-4">Hello, {{ username }}</p>
-        <br>
-        <a href="/facility">FACILITIES</a>
-        <br>
-        <a href="/equipment">EQUIPMENT</a>
-        <br>
-        <a href="/logout">Log Out</a>
-</body>
-
-</html>
+{% endblock %}

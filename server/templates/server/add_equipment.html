@@ -1,20 +1,10 @@
-<html>
-<title>
-    Add Equipment
-</title>
+{% extends 'server/master.html' %}
 
-<head>
-    <style>
-        input, button {
-            font-family: arial, sans-serif;
-            border: 1px solid #dddddd;
-            text-align: left;
-            padding: 8px;
-        }
-        </style>
-</head>
+{% block title %}
+Add Equipment
+{% endblock %}
 
-<body>
+{% block content %}
     <form action="/add_equipment/" method="POST">
         <label>Name: </label><input name="name" type="text">
         <br>
@@ -26,6 +16,4 @@
         <br>
         <button type="submit"> ADD </button>
     </form>
-</body>
-
-</html>
+{% endblock %}

@@ -1,21 +1,11 @@
-<html>
-<title>
-    Add Facility
-</title>
+{% extends 'server/master.html' %}
 
-<head>
-    <style>
-        input, button {
-            font-family: arial, sans-serif;
-            border: 1px solid #dddddd;
-            text-align: left;
-            padding: 8px;
-        }
-        </style>
-</head>
+{% block title %}
+Add Facility
+{% endblock %}
 
-<body>
-    <form action="/add_facility/" method="POST">
+{% block content %}
+<form action="/add_facility/" method="POST">
         {% csrf_token %}
         <label>Name: </label><input name="name" type="text">
         <br>
@@ -27,6 +17,4 @@
         <br>
         <button type="submit"> ADD </button>
     </form>
-</body>
-
-</html>
+{% endblock %}

@@ -13,49 +13,26 @@ def landing(request):
 @csrf_exempt
 def login(request):
     if request.method == 'POST':
-        # data = {'token': request.POST['token'], 'ttl': request.POST['ttl']}
-        # response = requests.post('http://localhost:8000/api/token/', data=data)
-        url = 'http://localhost:8000/api/superadmin?email=' + request.POST['email']
+        url = 'http://localhost:8000/api/user?email=' + request.POST['email']
         response = requests.get(url)
         data = response.json()
-        print (data)
+        print (data[0]['name'])
         if data:
             request.session['user_id'] = data[0]['id']
             request.session['user_name'] = data[0]['name']
             request.session['user_email'] = data[0]['email']
-            request.session['user_type'] = 'superadmin'
+            request.session['user_type'] = data[0]['usertype']
             request.session['logged_in'] = True
+            return HttpResponse('ok')
         else:
-            url = 'http://localhost:8000/api/subadmin?email=' + request.POST['email']
-            response = requests.get(url)
-            data = response.json()
-            print (data)
-            if data:
-                request.session['user_id'] = data[0]['id']
-                request.session['user_name'] = data[0]['name']
-                request.session['user_email'] = data[0]['email']
-                request.session['user_type'] = 'superadmin'
-                request.session['logged_in'] = True
-            else:
-                url = 'http://localhost:8000/api/borrower?email=' + request.POST['email']
-                response = requests.get(url)
-                data = response.json()
-                print (data)
-                if data:
-                    request.session['user_id'] = data[0]['id']
-                    request.session['user_name'] = data[0]['name']
-                    request.session['user_email'] = data[0]['email']
-                    request.session['user_type'] = 'superadmin'
-                    request.session['logged_in'] = True
-                else:
-                    url = 'http://localhost:8000/api/borrower'
-                    response = requests.post(url, {'name': request.POST['fullname'], 'email': request.POST['email']})
-                    request.session['user_id'] = data[0]['id']
-                    request.session['user_name'] = data[0]['name']
-                    request.session['user_email'] = data[0]['email']
-                    request.session['user_type'] = 'superadmin'
-                    request.session['logged_in'] = True
-        return HttpResponse('ok')
+            data = {'name': request.POST['fullname'], 'email': request.POST['email'], 'usertype': 2}
+            response = requests.post('http://localhost:8000/api/user/', data=data)
+            request.session['user_id'] = data[0]['id']
+            request.session['user_name'] = data[0]['name']
+            request.session['user_email'] = data[0]['email']
+            request.session['user_type'] = data[0]['usertype']
+            request.session['logged_in'] = True
+            return redirect(dashboard)
     else:
         return redirect(landing)
 
@@ -138,3 +115,4 @@ def edit_equipment(request, pk):
         print (data)
         edited_equipment = requests.put(url, data=data)
         return redirect(equipment)
+
