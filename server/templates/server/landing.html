@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 
-  <head>
+  <head> 
 
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -96,7 +96,15 @@
               'ttl': ttl
             },
             success: function(resp) {
-                location.replace('/dashboard');
+                if (resp == 0) {
+                    location.replace('/superadmin_dashboard');
+                }
+                else if (resp == 1) {
+                    location.replace('/subadmin_dashboard');
+                }
+                else if (resp == 2) {
+                    location.replace('/dashboard');
+                }
             },
             error: function(e) {
                 console.log('Error: ' + JSON.stringify(e));

@@ -23,7 +23,7 @@ def login(request):
             request.session['user_email'] = data[0]['email']
             request.session['user_type'] = data[0]['usertype']
             request.session['logged_in'] = True
-            return HttpResponse('ok')
+            return HttpResponse(request.session['user_type'])
         else:
             data = {'name': request.POST['fullname'], 'email': request.POST['email'], 'usertype': 2}
             response = requests.post('http://localhost:8000/api/user/', data=data)
@@ -33,7 +33,7 @@ def login(request):
             request.session['user_type'] = data[0]['usertype']
             request.session['logged_in'] = True
             return redirect(dashboard)
-    else:
+    else: 
         return redirect(landing)
 
 # @login_required
@@ -42,22 +42,32 @@ def logout(request):
     return redirect(landing)
 
 
-def dashboard(request):
-    if request.session['logged_in']:
-        return render(request, 'server/dashboard.html', {'username': request.session['user_name']})
-    else:
-        return redirect(landing)
+def superadmin_dashboard(request):
+    if request.session['logged_in'] and request.session['user_type'] == 0:
+        return render(request, 'server/admin_dashboard.html', {'username': request.session['user_name']})
+    return redirect(landing)
 
-# @login_required
+def subadmin_dashboard(request):
+    if request.session['logged_in'] and request.session['user_type'] == 1:
+        return render(request, 'server/admin_dashboard.html', {'username': request.session['user_name']})
+    return redirect(landing)
+
+def dashboard(request):
+    if request.session['logged_in'] and request.session['user_type'] == 2:
+        return render(request, 'server/dashboard.html', {'username': request.session['user_name']})
+    return redirect(landing)
+
 def facility(request):
     facilities = requests.get('http://localhost:8000/api/facility/')
     return render(request, 'server/facility.html', {'facilities': facilities.json()})
 
-# @login_required
-def view_facility(request):
+def view_facility(request, pk):
     return render(request, 'server/view_facility.html')
 
-# @login_required
+def admin_facility(request):
+    facilities = requests.get('http://localhost:8000/api/facility/')
+    return render(request, 'server/admin_facility.html', {'facilities': facilities.json()})
+
 def add_facility(request):
     if request.method == 'POST':
         data = {'name': request.POST['name'], 'status': request.POST['status']}
@@ -68,7 +78,6 @@ def add_facility(request):
     elif request.method == 'GET':
         return render(request, 'server/add_facility.html')
 
-# @login_required
 def edit_facility(request, pk):
     if request.method == 'GET':
         url = 'http://localhost:8000/api/facility/' + pk + '/'
@@ -84,12 +93,10 @@ def edit_facility(request, pk):
         edited_facility = requests.put(url, data=data)
         return redirect(facility)
 
-# @login_required
 def equipment(request):
     equipments = requests.get('http://localhost:8000/api/equipment/')
     return render(request, 'server/equipment.html', {'equipments': equipments.json()})
 
-# @login_required
 def add_equipment(request):
     if request.method == 'POST':
         data = {'name': request.POST['name'], 'status': request.POST['status']}
@@ -100,7 +107,6 @@ def add_equipment(request):
     elif request.method == 'GET':
         return render(request, 'server/add_equipment.html')
 
-# @login_required
 def edit_equipment(request, pk):
     if request.method == 'GET':
         url = 'http://localhost:8000/api/equipment/' + pk + '/'
@@ -116,3 +122,18 @@ def edit_equipment(request, pk):
         edited_equipment = requests.put(url, data=data)
         return redirect(equipment)
 
+def admin_reservation(request):
+    return render(request, 'server/admin_reservation.html')
+
+def admin_view_reservation(request, pk):
+    return render(request, 'server/admin_reservation.html')
+
+def add_reservation(request):
+    if request.method == 'POST':
+        data = {'name': request.POST['name'], 'status': request.POST['status']}
+        print (data)
+        response = requests.post('http://localhost:8000/api/equipment/', data=data)
+        print (response)
+        return redirect(equipment)
+    elif request.method == 'GET':
+        return render(request, 'server/add_equipment.html')

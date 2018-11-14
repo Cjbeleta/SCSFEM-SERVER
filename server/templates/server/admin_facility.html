@@ -13,20 +13,18 @@
                 <th>Status</th>
                 <th>Date Added</th>
                 <th>Borrower_ID</th>
-                <th>EDIT</th>
+                <th></th>
+                <th></th>
             </tr>
             {% for facility in facilities %}
             <tr>
                 <td>{{ facility.id }}</td>
                 <td>{{ facility.name }}</td>
-                {% if facility.status == 0 %}
-                <td>Hidden</td>
-                {% else %}
-                <td>Available</td>
-                {% endif %}
+                <td>{{ facility.status }}</td>
                 <td>{{ facility.date_added }}</td>
                 <td>{{ facility.borrower_id }}</td>
                 <td><a href="/edit_facility/{{ facility.id }}"><span class="fa fa-edit"></span> EDIT</a></td>
+                <td><a href="/view_facility/{{ facility.id }}"><span class="fa fa-eye"></span> VIEW</a></td>
             </tr>
             {% endfor %}
         </table>
