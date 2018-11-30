@@ -1,0 +1,28 @@
+{% extends 'server/admin_master.html' %}
+
+{% block title %}
+Edit Equipment
+{% endblock %}
+
+{% block content %}
+<div class="primary-container">
+    <form action="/edit_equipment/{{ equipment.id }}" method="POST">
+        <label>Name: </label><input name="name" value="{{ equipment.name }}" type="text">
+        <br>
+        <label>Status: </label>
+        <br>
+        {% if equipment.status == 1 %}
+        <input type="radio" name="status" value="1" checked><label>Available</label>
+        <br>
+        <input type="radio" name="status" value="0"><label>Hidden</label>
+        {% endif %}
+        {% if equipment.status == 0 %}
+        <input type="radio" name="status" value="1"><label>Available</label>
+        <br>
+        <input type="radio" name="status" value="0" checked><label>Hidden</label>
+        {% endif %}
+        <br>
+        <button type="submit"> SAVE </button>
+    </form>
+</div>
+{% endblock %}

@@ -28,23 +28,39 @@ a {
   color: #660000;
   -webkit-transition: all 0.2s;
   transition: all 0.2s;
+  text-decoration: none;
 }
 
-/*a:hover {
-  color: #f05f40;
-}*/
+a:hover {
+  color: #660000;
+  text-decoration: none;
+}
 
+p,
 h1,
 h2,
 h3,
 h4,
-h5,
 h6,
+button,
+label {
+  font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
+  color: white !important;
+}
+
+h5,
 td,
 th,
-tr,
-button {
+tr {
   font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
+}
+
+input {
+  font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
+  padding: 5px;
+  margin: 5px;
+  border: none !important;
+  border-radius: 3px;
 }
 
 .bg-primary {
@@ -70,7 +86,7 @@ th {
 }
 
 tr, th, td {
-  padding: 20px;
+  padding: 5px;
 }
 
 .content {
@@ -78,12 +94,14 @@ tr, th, td {
   height: 100%;
   padding: 5%;
   background-color: rgba(0, 0, 0, 0.6);
+  overflow-y: auto;
 }
 
 table {
   width: 100%;
   height: 50%;
   overflow-y: auto;
+  margin-top: 0 !important;
   background-color: white;
 }
 
@@ -348,3 +366,47 @@ header.masthead p {
   -webkit-box-shadow: 0 0 0 0.2rem rgba(240, 95, 64, 0.5) !important;
   box-shadow: 0 0 0 0.2rem rgba(240, 95, 64, 0.5) !important;
 }*/
+
+.primary-container {
+  border: 1px solid white !important;
+  padding: 10px;
+  margin: 30px auto;
+  width: 60%;
+  background-color: rgba(255, 255, 255);
+  text-align: center;
+  border-radius: 5px;
+}
+
+.primary-container:hover {
+  color: #660000;
+  cursor: pointer;
+}
+
+.primary-img {
+  width: 100%;
+  border: 1px solid white;
+}
+
+.dataTables_length {
+  display: none !important;
+}
+
+.modal-content {
+  width: 50% !important;
+  margin: auto;
+  margin-top: 10%;
+}
+
+#facility_previous,
+#facility_next,
+#equipment_previous,
+#equipment_next,
+#facility_info {
+  color: white !important;
+  font-family: 'Merriweather', 'Helvetica Neue', Arial, sans-serif;
+}
+
+.paginate_button {
+  color: white !important;
+  font-family: 'Merriweather', 'Helvetica Neue', Arial, sans-serif;
+}

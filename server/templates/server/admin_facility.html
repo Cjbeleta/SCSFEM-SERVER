@@ -1,31 +1,52 @@
-{% extends 'server/master.html' %}
+{% extends 'server/admin_master.html' %}
 
     {% block title %}
     Facility
     {% endblock %}
     
     {% block content %}
-        <a href="/add_facility"><button class="btn-primary"><span class="fa fa-plus"></span> ADD FACILITY</button></a>
-        <table>
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Status</th>
-                <th>Date Added</th>
-                <th>Borrower_ID</th>
-                <th></th>
-                <th></th>
-            </tr>
+        <button class="btn-primary" data-toggle="modal" data-target="#add"><span class="fa fa-plus"></span> ADD FACILITY</button>
+        <table id="facility" class="display">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Status</th>
+                    <th>Date Added</th>
+                    <th>Borrower_ID</th>
+                </tr>
+            </thead>
+            <tbody>
             {% for facility in facilities %}
-            <tr>
-                <td>{{ facility.id }}</td>
-                <td>{{ facility.name }}</td>
-                <td>{{ facility.status }}</td>
-                <td>{{ facility.date_added }}</td>
-                <td>{{ facility.borrower_id }}</td>
-                <td><a href="/edit_facility/{{ facility.id }}"><span class="fa fa-edit"></span> EDIT</a></td>
-                <td><a href="/view_facility/{{ facility.id }}"><span class="fa fa-eye"></span> VIEW</a></td>
-            </tr>
+                <tr>
+                        <td>{{ facility.id }}</td>
+                        <td><a href="/view_admin_facility/{{ facility.id }}">{{ facility.name }}</a></td>
+                        {% if facility.status == 1 %}
+                        <td>Available</td>
+                        {% else %}
+                        <td>Hidden</td>
+                        {% endif %}
+                        <td>{{ facility.date_added }}</td>
+                        <td>{{ facility.borrower_id }}</td>
+                </tr>
             {% endfor %}
+            </tbody>
         </table>
+
+        <div class="modal" id="add">
+            <div class="modal-content">
+                    <form action="/add_facility/" method="POST">
+                        {% csrf_token %}
+                        <label>Name: </label><input name="name" type="text">
+                        <br>
+                        <label>Status: </label>
+                        <br>
+                        <input type="radio" name="status" value="1" checked><label>Available</label>
+                        <br>
+                        <input type="radio" name="status" value="0"><label>Hidden</label>
+                        <br>
+                        <button type="submit"> ADD </button>
+                    </form>
+            </div>
+        </div>
     {% endblock %}

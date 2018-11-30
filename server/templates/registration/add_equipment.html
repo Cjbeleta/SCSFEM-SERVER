@@ -1,0 +1,21 @@
+{% extends 'server/admin_master.html' %}
+
+{% block title %}
+Add Equipment
+{% endblock %}
+
+{% block content %}
+<div class="primary-container">
+    <form action="/add_equipment/" method="POST">
+        <label>Name: </label><input name="name" type="text">
+        <br>
+        <label>Status: </label>
+        <br>
+        <input type="radio" name="status" value="1" checked><label>Available</label>
+        <br>
+        <input type="radio" name="status" value="0"><label>Hidden</label>
+        <br>
+        <button type="submit"> ADD </button>
+    </form>
+</div>
+{% endblock %}

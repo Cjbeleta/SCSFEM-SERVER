@@ -1,0 +1,42 @@
+{% extends 'server/master.html' %}
+
+    {% block title %}
+    Facility
+    {% endblock %}
+    
+    {% block content %}
+            <div class="row">
+                <div class="col-md-3">
+                    <img class="primary-img" src="https://images.unsplash.com/photo-1522165078649-823cf4dbaf46?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=756f069c98c96a701453b1e27630e961&auto=format&fit=crop&w=750&q=80">
+                    <a href="/reservation"><button class="btn-primary" style="width: 100%;">APPLY FOR RESERVATION</button></a>
+                    <h4>{{ name }}</h4>
+                    <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>
+                </div>
+                
+                <div class="col-md-6">
+                    <table>
+                        <tr>
+                            <th>TIME</th>
+                            <th>SUNDAY</th>
+                            <th>MONDAY</th>
+                            <th>TUESDAY</th>
+                            <th>WEDNESDAY</th>
+                            <th>THURSDAY</th>
+                            <th>FRIDAY</th>
+                            <th>SATURDAY</th>
+                        </tr>
+                        {% for facility in facilities %}
+                        <tr>
+                            <td>{{ facility.id }}</td>
+                            <td>{{ facility.name }}</td>
+                            <td>{{ facility.status }}</td>
+                            <td>{{ facility.date_added }}</td>
+                            <td>{{ facility.borrower_id }}</td>
+                            <td><a href="/edit_facility/{{ facility.id }}"><span class="fa fa-edit"></span> EDIT</a></td>
+                            <td><a href="/view_facility/{{ facility.id }}"><span class="fa fa-eye"></span> VIEW</a></td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+    {% endblock %} 

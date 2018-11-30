@@ -1,0 +1,36 @@
+{% extends 'server/admin_master.html' %}
+
+{% block title %}
+Reservation
+{% endblock %}
+
+{% block content %}
+<table>
+            <tr>
+                <th>ID</th>
+                <th>Borrower ID</th>
+                <th>Item ID</th>
+                <th>Reservation Type</th>
+                <th>Date of Application</th>
+                <th>Start Reservation</th>
+                <th>End Reservation</th>
+                <th>Status</th>
+            </tr>
+            {% for r in reservation %}
+            <tr>
+                <td>{{ r.id }}</td>
+                <td>{{ r.borrower_id }}</td>
+                <td>{{ r.item_id }}</td>
+                <td>{{ r.reservation_type }}</td>
+                <td>{{ r.date_aplication }}</td>
+                <td>{{ r.date_reservation_start }}</td>
+                <td>{{ r.date_reservation_end }}</td>
+                {% if r.status == 0 %}
+                <td>Pending</td>
+                {% else %}
+                <td>Approved</td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+        </table>
+{% endblock %}

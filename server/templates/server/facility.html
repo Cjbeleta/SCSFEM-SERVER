@@ -5,29 +5,11 @@
     {% endblock %}
     
     {% block content %}
-        <a href="/add_facility"><button class="btn-primary"><span class="fa fa-plus"></span> ADD FACILITY</button></a>
-        <table>
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Status</th>
-                <th>Date Added</th>
-                <th>Borrower_ID</th>
-                <th>EDIT</th>
-            </tr>
             {% for facility in facilities %}
-            <tr>
-                <td>{{ facility.id }}</td>
-                <td>{{ facility.name }}</td>
-                {% if facility.status == 0 %}
-                <td>Hidden</td>
-                {% else %}
-                <td>Available</td>
-                {% endif %}
-                <td>{{ facility.date_added }}</td>
-                <td>{{ facility.borrower_id }}</td>
-                <td><a href="/edit_facility/{{ facility.id }}"><span class="fa fa-edit"></span> EDIT</a></td>
-            </tr>
+                <div class="primary-container" style="width: 40%;">
+                    <a href="/view_facility/{{ facility.id }}">
+                    <h5>{{ facility.name }}</h5>
+                    </a>
+                </div>
             {% endfor %}
-        </table>
     {% endblock %}

@@ -1,0 +1,50 @@
+{% extends 'server/admin_master.html' %}
+    
+    {% block title %}
+    Equipment
+    {% endblock %}
+ 
+    {% block content %}
+        <button class="btn-primary" data-toggle="modal" data-target="#add"><span class="fa fa-plus"></span> ADD EQUIPMENT</button>
+        <table id="equipment" class="display">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Status</th>
+                    <th>Quantity</th>
+                    <th>Date Added</th>
+                    <th>Borrower_ID</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for equipment in equipments %}
+                <tr>
+                    <td>{{ equipment.id }}</td>
+                    <td><a href="/view_admin_equipment/{{ equipment.id }}">{{ equipment.name }}</a></td>
+                    <td>{{ equipment.status }}</td>
+                    <td>{{ equipment.quantity}}</td>
+                    <td>{{ equipment.date_added }}</td>
+                    <td>{{ equipment.borrower_id }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="modal" id="add">
+            <div class="modal-content">
+                <form action="/add_equipment/" method="POST">
+                    {% csrf_token %}
+                    <label>Name: </label><input name="name" type="text">
+                    <br>
+                    <label>Status: </label>
+                    <br>
+                    <input type="radio" name="status" value="1" checked><label>Available</label>
+                    <br>
+                    <input type="radio" name="status" value="0"><label>Hidden</label>
+                    <br>
+                    <button type="submit"> ADD </button>
+                </form>
+            </div>
+        </div>
+    {% endblock %}

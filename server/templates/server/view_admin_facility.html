@@ -1,0 +1,202 @@
+{% extends 'server/admin_master.html' %}
+
+    {% block title %}
+    Facility
+    {% endblock %}
+    
+    {% block content %}
+            <div class="row">
+                <div class="col-md-3">
+                    <img class="primary-img" src="{{ image }}">
+                    <button class="btn-primary" data-toggle="modal" data-target="#edit" style="width: 100%;">EDIT</button></a>
+                    <h4>{{ name }}</h4>
+                    <p>{{ description }}</p>
+                </div>
+                
+                <div class="col-md-9">
+                    <table style="width: 100%;">
+                        <thead>
+                            <tr>
+                                <th>TIME</th>
+                                <th>SUN</th>
+                                <th>MON</th>
+                                <th>TUE</th>
+                                <th>WED</th>
+                                <th>THU</th>
+                                <th>FRI</th>
+                                <th>SAT</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>06:00 - 07:00</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>07:00 - 08:00</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>08:00 - 09:00</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>09:00 - 10:00</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>10:00 - 11:00</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>11:00 - 12:00</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>12:00 - 01:00</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>01:00 - 02:00</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>02:00 - 03:00</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>03:00 - 04:00</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>04:00 - 05:00</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>05:00 - 06:00</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>06:00 - 07:00</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>07:00 - 08:00</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>08:00 - 09:00</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="modal" id="edit">
+                <div class="modal-content">
+                    <form action="/edit_facility/{{ id }}" method="POST">
+                        {% csrf_token %}
+                        <label>Name: </label><input name="name" type="text">
+                        <br>
+                        <label>Status: </label>
+                        <br>
+                        <input type="radio" name="status" value="1" checked><label>Available</label>
+                        <br>
+                        <input type="radio" name="status" value="0"><label>Hidden</label>
+                        <br>
+                        <button type="submit"> SAVE </button>
+                    </form>
+                </div>
+            </div>
+    {% endblock %} 
