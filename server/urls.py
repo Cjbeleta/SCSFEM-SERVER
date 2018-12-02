@@ -39,6 +39,8 @@ urlpatterns = [
     path('edit_facility/<str:pk>', views.edit_facility),
     # equipment route
     path('equipment/', views.equipment),
+    # view equipment route
+    path('view_equipment/<str:pk>', views.view_equipment),
     # add equipment route
     path('add_equipment/', views.add_equipment),
     # edit equipment route
@@ -47,4 +49,14 @@ urlpatterns = [
     path('view_admin_equipment/<str:pk>', views.view_admin_equipment),
     # apply reservation route
     path('apply_reservation/<str:pk>', views.apply_reservation),
+    # reservaion list route
+    path('reservation_list/', views.reservation_list),
+    # delete reservation route
+    path('delete_reservation/<str:pk>', views.delete_reservation),
+    # edit reservation route
+    path('edit_reservation/<str:pk>', views.edit_reservation),
+    # approve reservation route
+    path('approve_reservation/<str:pk>', views.approve_reservation),
+    # reject reservation route
+    path('reject_reservation/<str:pk>', views.reject_reservation)
 ]

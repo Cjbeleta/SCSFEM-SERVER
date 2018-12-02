@@ -1,9 +1,135 @@
 {% extends 'server/master.html' %}
 
 {% block title %}
-Reservation
+Reservations
 {% endblock %}
 
 {% block content %}
+        <table id="reservation" class="display">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Type</th>
+                    <th>Item ID</th>
+                    <th>Event Name</th>
+                    <th>Quantity</th>
+                    <th>Date of Application</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Start Time</th>
+                    <th>End Time</th>
+                    <th>Status</th>
+                    <th>EDIT</th>
+                    <th>DELETE</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for r in reservation %}
+                <tr>
+                        <td>{{ r.id }}</td>
+                        <td>{{ r.reserve_type }}</td>
+                        <td>{{ r.item_id }}</td>
+                        <td>{% if r.reserve_type == 'equipment' %} -- {% else %} {{ r.eventname }} {% endif %}</td>
+                        <td>{% if r.reserve_type == 'facility' %} -- {% else %} {{ r.quantity }} {% endif %}</td>
+                        <td>{{ r.date_application }}</td>
+                        <td>{{ r.month }} / {{ r.start_day }} / {{ r.year }}</td>
+                        <td>{{ r.month }} / {{ r.end_day }} / {{ r.year }}</td>
+                        <td>{{ r.start_time }}
+                        </td>
+                        <td>{{ r.end_time }}</td>
+                        {% if r.status == 0 %}
+                        <td>Pending</td>
+                        {% else %}
+                        <td>Approved</td>
+                        {% endif %}
+                        <td><button class="btn-primary" data-toggle="modal" data-target="#edit_{{ r.id }}">EDIT</button></td>
+                        <td><a href="/delete_reservation/{{ r.id }}">DELETE</a></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
 
+        {% for r in reservation %}
+        <div class="modal" id="edit_{{ r.id }}">
+            <div class="modal-content">
+                <div class="form-container">
+                    <form action="/edit_reservation/{{ r.id }}" method="POST">
+                            {% csrf_token %}
+
+                            <input type="text" name="type" value="{{ r.reserve_type }}" style="display: none;">
+                            <input type="text" name="item_id" value="{{ r.item_id }}" style="display: none;">
+
+                            {% if r.reserve_type == 'facility' %}
+                            <h5><b>FACILITY:</b> {{ r.item_id }}</h5>
+                            <label>EVENT: </label>
+                                        <input type="text" name="eventname" value="{{ r.eventname }}" required>
+                            {% else %}
+                            <h5><b>EQUIPMENT:</b> {{ r.item_id }}</h5>
+                            <label>QUANTITY: </label>
+                                        <input type="text" name="quantity" value="{{ r.quantity }}" required>
+                            {% endif %}
+                                        <label>MONTH: </label>
+                                        <select name="month">
+                                            <option value="1" {% if r.month == 1 %} selected {% endif %}>January</option>
+                                            <option value="2" {% if r.month == 2 %} selected {% endif %}>February</option>
+                                            <option value="3" {% if r.month == 3 %} selected {% endif %}>March</option>
+                                            <option value="4" {% if r.month == 4 %} selected {% endif %}>April</option>
+                                            <option value="5" {% if r.month == 5 %} selected {% endif %}>May</option>
+                                            <option value="6" {% if r.month == 6 %} selected {% endif %}>June</option>
+                                            <option value="7" {% if r.month == 7 %} selected {% endif %}>July</option>
+                                            <option value="8" {% if r.month == 8 %} selected {% endif %}>August</option>
+                                            <option value="9" {% if r.month == 9 %} selected {% endif %}>September</option>
+                                            <option value="10" {% if r.month == 10 %} selected {% endif %}>October</option>
+                                            <option value="11" {% if r.month == 11 %} selected {% endif %}>November</option>
+                                            <option value="12" {% if r.month == 12 %} selected {% endif %}>December</option>
+                                        </select>
+                                        <label>START DAY: </label>
+                                        <select name="start_day" value="{{ r.start_day }}">
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5</option>
+                                            <option value="6">6</option>
+                                            <option value="7">7</option>
+                                            <option value="8">8</option>
+                                            <option value="9">9</option>
+                                            <option value="10">10</option>
+                                        </select>
+                                        <label>END DAY: </label>
+                                        <select name="end_day" value="{{ r.end_day }}">
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5</option>
+                                            <option value="6">6</option>
+                                            <option value="7">7</option>
+                                            <option value="8">8</option>
+                                            <option value="9">9</option>
+                                            <option value="10">10</option>
+                                        </select>
+                                        <label>START TIME: </label>
+                                        <select name="start_time" value="{{ r.start_time }}">
+                                            <option value="6">6:00 AM</option>
+                                            <option value="7">7:00 AM</option>
+                                            <option value="8">8:00 AM</option>
+                                            <option value="9">9:00 AM</option>
+                                            <option value="10">10:00 AM</option>
+                                        </select>
+                                        <label>END TIME: </label>
+                                        <select name="end_time" value="{{ r.end_time }}">
+                                            <option value="6">6:00 AM</option>
+                                            <option value="7">7:00 AM</option>
+                                            <option value="8">8:00 AM</option>
+                                            <option value="9">9:00 AM</option>
+                                            <option value="10">10:00 AM</option>
+                                        </select>
+                                        <button type="submit" class="btn-primary">SAVE</button>
+                                        <button type="button" class="btn-secondary">CANCEL</button>
+                        </form>
+                    </div>
+            </div>
+        </div>
+        {% endfor %}
 {% endblock %}

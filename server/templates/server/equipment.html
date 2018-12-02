@@ -1,31 +1,17 @@
 {% extends 'server/master.html' %}
-    
+
     {% block title %}
     Equipment
     {% endblock %}
- 
+    
     {% block content %}
-        <a href="/add_equipment"><button class="btn-primary"><span class="fa fa-plus"></span> ADD EQUIPMENT</button></a>
-        <table>
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Status</th>
-                <th>Quantity</th>
-                <th>Date Added</th>
-                <th>Borrower_ID</th>
-                <th>EDIT</th>
-            </tr>
             {% for equipment in equipments %}
-            <tr>
-                <td>{{ equipment.id }}</td>
-                <td>{{ equipment.name }}</td>
-                <td>{{ equipment.status }}</td>
-                <td>{{ equipment.quantity}}</td>
-                <td>{{ equipment.date_added }}</td>
-                <td>{{ equipment.borrower_id }}</td>
-                <td><a href="/edit_equipment/{{ equipment.id }}"><span class="fa fa-edit"></span> EDIT</a></td>
-            </tr>
+                {% if equipment.status == 1 %}
+                <div class="primary-container" style="width: 40%;">
+                    <a href="/view_equipment/{{ equipment.id }}">
+                    <h5>{{ equipment.name }}</h5>
+                    </a>
+                </div>
+                {% endif %}
             {% endfor %}
-        </table>
     {% endblock %}

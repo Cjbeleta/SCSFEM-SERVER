@@ -5,32 +5,51 @@ Reservation
 {% endblock %}
 
 {% block content %}
-<table>
-            <tr>
-                <th>ID</th>
-                <th>Borrower ID</th>
-                <th>Item ID</th>
-                <th>Reservation Type</th>
-                <th>Date of Application</th>
-                <th>Start Reservation</th>
-                <th>End Reservation</th>
-                <th>Status</th>
-            </tr>
+<table id="reservation" class="display">
+            <thead>
+                <tr>
+                    <!-- <th>ID</th> -->
+                    <th>Borrower ID</th>
+                    <th>Type</th>
+                    <th>Item ID</th>
+                    <th>Event Name</th>
+                    <th>Quantity</th>
+                    <th>Date of Application</th>
+                    <th>Start Reservation</th>
+                    <th>End Reservation</th>
+                    <th>Status</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
             {% for r in reservation %}
-            <tr>
-                <td>{{ r.id }}</td>
-                <td>{{ r.borrower_id }}</td>
-                <td>{{ r.item_id }}</td>
-                <td>{{ r.reservation_type }}</td>
-                <td>{{ r.date_aplication }}</td>
-                <td>{{ r.date_reservation_start }}</td>
-                <td>{{ r.date_reservation_end }}</td>
-                {% if r.status == 0 %}
-                <td>Pending</td>
-                {% else %}
-                <td>Approved</td>
-                {% endif %}
-            </tr>
+                <tr>
+                        <!-- <td>{{ r.id }}</td> -->
+                        <td>{{ r.borrower_id }}</td>
+                        <td>{{ r.reserve_type }}</td>
+                        <td>{{ r.item_id }}</td>
+                        <td>{% if r.reserve_type == 'equipment' %} -- {% else %} {{ r.eventname }} {% endif %}</td>
+                        <td>{% if r.reserve_type == 'facility' %} -- {% else %} {{ r.quantity }} {% endif %}</td>
+                        <td>{{ r.date_application }}</td>
+                        <td>{{ r.month }}-{{ r.start_day }}-{{ r.year }} {{ r.start_time}}:00</td>
+                        <td>{{ r.month }}-{{ r.end_day }}-{{ r.year }} {{r.end_time}}:00</td>
+                        {% if r.status == 0 %}
+                        <td>Pending</td>
+                        <td>
+                            <a href="/approve_reservation/{{ r.id }}">APPROVE</a>
+                            <br>
+                            <a href="/reject_reservation/{{ r.id }}">REJECT</a>
+                        </td>
+                        {% elif r.status == 1 %}
+                        <td>Approved</td>
+                        <td></td>
+                        {% else %}
+                        <td>Rejected</td>
+                        <td></td>
+                        {% endif %}
+                </tr>
             {% endfor %}
+            </tbody>
         </table>
+
 {% endblock %}

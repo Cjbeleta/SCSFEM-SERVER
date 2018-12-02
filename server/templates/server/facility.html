@@ -6,10 +6,12 @@
     
     {% block content %}
             {% for facility in facilities %}
+                {% if facility.status == 1 %}
                 <div class="primary-container" style="width: 40%;">
                     <a href="/view_facility/{{ facility.id }}">
                     <h5>{{ facility.name }}</h5>
                     </a>
                 </div>
+                {% endif %}
             {% endfor %}
     {% endblock %}

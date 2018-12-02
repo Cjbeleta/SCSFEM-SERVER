@@ -1,7 +1,7 @@
 {% extends 'server/master.html' %}
 
     {% block title %}
-    Facility
+    Equipment
     {% endblock %}
     
     {% block content %}
@@ -38,10 +38,10 @@
                         <div class="form-container-content">
                             <form action="/apply_reservation/{{ id }}" method="POST">
                             {% csrf_token %}
-                            <h5><b>FACILITY:</b> {{ name }}</h5>
-                                        <input style="display: none;" type="text" name="type" value="0">
-                                        <label>EVENT NAME: </label>
-                                        <input type="text" name="eventname" required>
+                            <h5><b>EQUIPMENT:</b> {{ name }}</h5>
+                                        <input style="display: none;" type="text" name="type" value="1">
+                                        <label>QUANTITY: </label>
+                                        <input type="text" name="quantity" required>
                                         <label>MONTH: </label>
                                         <select name="month">
                                             <option value="1">January</option>

@@ -13,7 +13,6 @@
                     <th>Name</th>
                     <th>Status</th>
                     <th>Date Added</th>
-                    <th>Borrower_ID</th>
                 </tr>
             </thead>
             <tbody>
@@ -27,7 +26,6 @@
                         <td>Hidden</td>
                         {% endif %}
                         <td>{{ facility.date_added }}</td>
-                        <td>{{ facility.borrower_id }}</td>
                 </tr>
             {% endfor %}
             </tbody>
@@ -35,6 +33,7 @@
 
         <div class="modal" id="add">
             <div class="modal-content">
+                <div class="form-container">
                     <form action="/add_facility/" method="POST">
                         {% csrf_token %}
                         <label>Name: </label><input name="name" type="text">
@@ -45,8 +44,9 @@
                         <br>
                         <input type="radio" name="status" value="0"><label>Hidden</label>
                         <br>
-                        <button type="submit"> ADD </button>
+                        <button type="submit" class="btn-primary"> ADD </button>
                     </form>
+                </div>
             </div>
         </div>
     {% endblock %}
