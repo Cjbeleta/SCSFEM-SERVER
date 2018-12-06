@@ -14,33 +14,19 @@
                 </div>
                 
                 <div class="col-md-9">
-                    <table>
-                        <thead>
-                        <tr>
-                            <th>SUNDAY</th>
-                            <th>MONDAY</th>
-                            <th>TUESDAY</th>
-                            <th>WEDNESDAY</th>
-                            <th>THURSDAY</th>
-                            <th>FRIDAY</th>
-                            <th>SATURDAY</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                            {% for t in time %}
-                            <tr>
-                                <td>{{ t }}</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
+                    <div id="schedule" style="width:100%;"></div>
+                    <script>
+                    $(function () {
+                        $('#schedule').calendar({
+                            months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+                            days: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                            color: '#660000',
+                            onSelect: function (event) {
+                                alert('You selected me, ' + event.label);
+                            }
+                        });
+                    });
+                    </script>
                 </div>
             </div>
 
