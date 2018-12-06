@@ -72,6 +72,15 @@ select {
   width: 50%;
 }
 
+textarea {
+  font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
+  padding: 10px;
+  margin: 10px;
+  border: 1px solid grey !important;
+  border-radius: 3px;
+  width: 80%;
+}
+
 .bg-primary {
   background-color: #F05F40 !important;
 }
@@ -443,7 +452,7 @@ header.masthead p {
   width: 80%;
   height: 90%;
   margin: auto;
-  margin-top: 3%;
+  margin-top: 2%;
 }
 
 .form-container-header {
@@ -508,4 +517,12 @@ header.masthead p {
   border-color: #fff !important;
   width: 50% !important;
   max-width: none !important;
+}
+
+.button {
+  color: white !important;
+}
+
+.button:hover {
+  color: #660000 !important;
 }

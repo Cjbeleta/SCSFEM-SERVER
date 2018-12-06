@@ -6,27 +6,47 @@
     
     {% block content %}
         <button class="btn-primary" data-toggle="modal" data-target="#add"><span class="fa fa-plus"></span> ADD FACILITY</button>
-        <table id="facility" class="display">
+        <br>
+        <h2>AVAILABLE</h2>
+        <table id="facility_available" class="display">
             <thead>
                 <tr>
                     <th>ID</th>
                     <th>Name</th>
-                    <th>Status</th>
                     <th>Date Added</th>
                 </tr>
             </thead>
             <tbody>
             {% for facility in facilities %}
+                {% if facility.status == 1 %}
                 <tr>
                         <td>{{ facility.id }}</td>
                         <td><a href="/view_admin_facility/{{ facility.id }}">{{ facility.name }}</a></td>
-                        {% if facility.status == 1 %}
-                        <td>Available</td>
-                        {% else %}
-                        <td>Hidden</td>
-                        {% endif %}
                         <td>{{ facility.date_added }}</td>
                 </tr>
+                {% endif %}
+            {% endfor %}
+            </tbody>
+        </table>
+        <br>
+        <h2>UNAVAILABLE</h2>
+        <table id="facility_unavailable" class="display">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Date Added</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for facility in facilities %}
+                {% if facility.status == 0 %}
+                <tr>
+                        <td>{{ facility.id }}</td>
+                        <td><a href="/view_admin_facility/{{ facility.id }}">{{ facility.name }}</a></td>
+                        <td>{{ facility.date_added }}</td>
+                </tr>
+                {% endif %}
             {% endfor %}
             </tbody>
         </table>
@@ -36,7 +56,7 @@
                 <div class="form-container">
                     <form action="/add_facility/" method="POST">
                         {% csrf_token %}
-                        <label>Name: </label><input name="name" type="text">
+                        <label>Name: </label><input name="name" type="text" placeholder="Enter name" required>
                         <br>
                         <label>Status: </label>
                         <br>

@@ -78,8 +78,7 @@ def view_facility(request, pk):
             return redirect(admin_dashboard)
         url = 'http://localhost:8000/api/facility/' + pk + '/'
         response = requests.get(url)
-        print (response.json())
-        return render(request, 'server/view_facility.html', response.json())
+        return render(request, 'server/view_facility.html', {'facility': response.json()})
     return redirect(landing)
 
 def view_admin_facility(request, pk):
@@ -142,8 +141,8 @@ def view_equipment(request, pk):
             return redirect(admin_dashboard)
         url = 'http://localhost:8000/api/equipment/' + pk + '/'
         response = requests.get(url)
-        print (response.json())
-        return render(request, 'server/view_equipment.html', response.json())
+        equipment = response.json()
+        return render(request, 'server/view_equipment.html', {'equipment': equipment})
     return redirect(landing)
 
 def admin_equipment(request):
@@ -166,7 +165,7 @@ def add_equipment(request):
     if request.session['logged_in']:
         if request.session['user_type'] == 0 or request.session['user_type'] == 1:
             if request.method == 'POST':
-                data = {'name': request.POST['name'], 'status': request.POST['status']}
+                data = {'name': request.POST['name'], 'quantity': request.POST['quantity'], 'status': request.POST['status']}
                 print (data)
                 response = requests.post('http://localhost:8000/api/equipment/', data=data)
                 print (response)
@@ -190,10 +189,14 @@ def edit_equipment(request, pk):
 def admin_reservation(request):
     if request.session['logged_in']:
         if request.session['user_type'] == 0 or request.session['user_type'] == 1:
+            current_day = int(datetime.datetime.today().strftime('%d'))
+            current_month = int(datetime.datetime.today().strftime('%m'))
+            print(current_month)
+            print(current_day)
             url = 'http://localhost:8000/api/reservation/'
             response = requests.get(url)
             print (response)
-            return render(request, 'server/admin_reservation.html', {'reservation': response.json()})
+            return render(request, 'server/admin_reservation.html', {'reservation': response.json(), 'current_month': current_month, 'current_day': current_day})
         return redirect(dashboard)
     return redirect(landing)
 
@@ -232,7 +235,8 @@ def apply_reservation(request, pk):
         if request.session['user_type'] == 0 or request.session['user_type'] == 1:
             return redirect(admin_dashboard)
         if request.method == 'POST':
-            if request.POST['type'] == 0:
+            print(request.POST['type'])
+            if request.POST['type'] == str(0):
                 data = {
                 'borrower_id': request.session['user_id'],
                 'item_id': pk,
@@ -249,7 +253,7 @@ def apply_reservation(request, pk):
                 response = requests.post('http://localhost:8000/api/reservation/', data=data)
                 print (response)
                 return redirect(view_facility, pk)
-            else:
+            elif request.POST['type'] == str(1):
                 data = {
                     'borrower_id': request.session['user_id'],
                     'item_id': pk,
@@ -266,6 +270,7 @@ def apply_reservation(request, pk):
                 response = requests.post('http://localhost:8000/api/reservation/', data=data)
                 print (response)
                 return redirect(view_equipment, pk)
+            return redirect(facility)
         return redirect(dashboard)
     return redirect(landing)
 
@@ -321,4 +326,53 @@ def delete_reservation(request, pk):
         url = 'http://localhost:8000/api/reservation/' + pk
         response = requests.delete(url)
         return redirect(reservation_list)
+    return redirect(landing)
+
+def check_reservation(request, pk):
+    if request.session['logged_in']:
+        if request.session['user_type'] == 0 or request.session['user_type'] == 1:
+            if request.method == 'POST':
+                url = 'http://localhost:8000/api/reservation/' + pk
+                response = requests.get(url)
+                reservation = response.json()
+                url = 'http://localhost:8000/api/reservation/' + pk + '/'
+                data = {
+                    'borrower_id': reservation['borrower_id'],
+                    'item_id': reservation['item_id'],
+                    'remarks': request.POST['remarks'],
+                    'status': 3
+                }
+                response = requests.put(url, data=data)
+                return redirect(admin_reservation)
+            return redirect(admin_dashboard)
+        return redirect(dashboard)
+    return redirect(landing)
+
+def users(request):
+    if request.session['logged_in']:
+        if request.session['user_type'] == 0 or request.session['user_type'] == 1:
+            url = 'http://localhost:8000/api/user/'
+            response = requests.get(url)
+            users = response.json()
+            return render(request, 'server/user.html', {'users': users})
+        return redirect(dashboard)
+    return redirect(landing)
+
+def change_user_type(request, pk):
+    if request.session['logged_in']:
+        if request.session['user_type'] == 0 or request.session['user_type'] == 1:
+            if request.method == 'POST':
+                url = 'http://localhost:8000/api/user/' + pk
+                response = requests.get(url)
+                user = response.json()
+                url = 'http://localhost:8000/api/user/' + pk + '/'
+                data = {
+                    'name': user['name'],
+                    'email': user['email'],
+                    'usertype': request.POST['usertype']
+                }
+                response = requests.put(url, data=data)
+                return redirect(users)
+            return redirect(admin_dashboard)
+        return redirect(dashboard)
     return redirect(landing)

@@ -1,0 +1,65 @@
+{% extends 'server/admin_master.html' %}
+
+{% block title %}
+Users
+{% endblock %}
+
+{% block content %}
+<table id="user" class="display">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>User Type</th>
+                    <th>Date Registered</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for u in users %}
+                <tr>
+                        <td>{{ u.id }}</td>
+                        <td>{{ u.name }}</td>
+                        <td>{{ u.email }}</td>
+                        {% if u.usertype == 0 %}
+                        <td>Superadmin</td>
+                        {% elif u.usertype == 1 %}
+                        <td>Subadmin</td>
+                        {% else %}
+                        <td>Borrower</td>
+                        {% endif %}
+                        <td>{{ u.date_added }}</td>
+                        <td><button class="btn-primary" data-toggle="modal" data-target="#edit_{{ u.id }}">CHANGE TYPE</button></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        {% for u in users %}
+        <div class="modal" id="edit_{{ u.id }}">
+		            <div class="modal-content">
+		                <div class="form-container">
+		                    <form action="/change_user_type/{{ u.id }}" method="POST">
+		                        {% csrf_token %}
+		                        <label>User Type: </label>
+		                        <select name="usertype">
+		                        	<option value="0" {% if u.usertype == 0 %} selected {% endif %}>
+		                        		Superadmin
+		                        	</option>
+		                        	<option value="1" {% if u.usertype == 1 %} selected {% endif %}>
+		                        		Subadmin
+		                        	</option>
+		                        	<option value="2" {% if u.usertype == 2 %} selected {% endif %}>
+		                        		Borrower
+		                        	</option>
+		                        </select>
+		                        <br>
+		                        <button type="submit" class="btn-primary"> SAVE </button>
+		                    </form>
+		                </div>
+		            </div>
+		        </div>
+        {% endfor %}
+
+{% endblock %}

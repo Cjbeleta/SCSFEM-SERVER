@@ -19,6 +19,7 @@ Reservation
                     <th>End Reservation</th>
                     <th>Status</th>
                     <th></th>
+                    <th>Remarks</th>
                 </tr>
             </thead>
             <tbody>
@@ -36,20 +37,50 @@ Reservation
                         {% if r.status == 0 %}
                         <td>Pending</td>
                         <td>
-                            <a href="/approve_reservation/{{ r.id }}">APPROVE</a>
+                            <button class="btn-primary">
+                            <a class="button" href="/approve_reservation/{{ r.id }}">APPROVE</a>
+                            </button>
                             <br>
-                            <a href="/reject_reservation/{{ r.id }}">REJECT</a>
+                            <button class="btn-primary">
+                            <a class="button" href="/reject_reservation/{{ r.id }}">REJECT</a>
+                            </button>
                         </td>
                         {% elif r.status == 1 %}
                         <td>Approved</td>
-                        <td></td>
-                        {% else %}
+                        {% if r.month <= current_month and r.end_day <= current_day %}
+                        <td>
+                            <button class="btn-primary" data-toggle="modal" data-target="#check_{{ r.id }}">CHECK</button>
+                        </td>
+                        {% endif %}
+                        {% elif r.status == 2 %}
                         <td>Rejected</td>
                         <td></td>
+                        {% else %}
+                        <td>Completed</td>
+                        <td></td>
                         {% endif %}
+                        <td>{{ r.remarks }}</td>
                 </tr>
             {% endfor %}
             </tbody>
         </table>
+
+        {% for r in reservation %}
+        {% if r.status == 1 %}
+        <div class="modal" id="check_{{ r.id }}">
+            <div class="modal-content">
+                <div class="form-container">
+                    <form action="/check_reservation/{{ r.id }}" method="POST">
+                        {% csrf_token %}
+                        <label>Remarks: </label>
+                        <br>
+                        <textarea name="remarks" type="text" placeholder="Enter remarks here" required></textarea>
+                        <button type="submit" class="btn-primary"> MARK AS COMPLETED </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        {% endfor %}
 
 {% endblock %}

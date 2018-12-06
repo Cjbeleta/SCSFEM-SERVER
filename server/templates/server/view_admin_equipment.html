@@ -188,7 +188,7 @@
                     <div class="form-container">
                     <form action="/edit_equipment/{{ id }}" method="POST">
                         {% csrf_token %}
-                        <label>Name: </label><input name="name" type="text" value="{{ name }}">
+                        <label>Name: </label><input name="name" type="text" placeholder="Enter new name" value="{{ name }}">
                         <br>
                         <label>Status: </label>
                         <br>

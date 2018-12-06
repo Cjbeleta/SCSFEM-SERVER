@@ -58,5 +58,11 @@ urlpatterns = [
     # approve reservation route
     path('approve_reservation/<str:pk>', views.approve_reservation),
     # reject reservation route
-    path('reject_reservation/<str:pk>', views.reject_reservation)
+    path('reject_reservation/<str:pk>', views.reject_reservation),
+    # check reservation route
+    path('check_reservation/<str:pk>', views.check_reservation),
+    # users list route
+    path('users/', views.users),
+    # change usertype route
+    path('change_user_type/<str:pk>', views.change_user_type)
 ]

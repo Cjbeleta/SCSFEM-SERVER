@@ -6,29 +6,51 @@
  
     {% block content %}
         <button class="btn-primary" data-toggle="modal" data-target="#add"><span class="fa fa-plus"></span> ADD EQUIPMENT</button>
-        <table id="equipment" class="display">
+        <br>
+        <h2>AVAILABLE</h2>
+        <table id="available_equipment" class="display">
             <thead>
                 <tr>
                     <th>ID</th>
                     <th>Name</th>
-                    <th>Status</th>
                     <th>Quantity</th>
                     <th>Date Added</th>
                 </tr>
             </thead>
             <tbody>
                 {% for equipment in equipments %}
+                {% if equipment.status == 1 %}
                 <tr>
                     <td>{{ equipment.id }}</td>
                     <td><a href="/view_admin_equipment/{{ equipment.id }}">{{ equipment.name }}</a></td>
-                    {% if equipment.status == 0 %}
-                    <td>Hidden</td>
-                    {% else %}
-                    <td>Available</td>
-                    {% endif %}
                     <td>{{ equipment.quantity}}</td>
                     <td>{{ equipment.date_added }}</td>
                 </tr>
+                {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+        <br>
+        <h2>UNAVAILABLE</h2>
+        <table id="unavailable_equipment" class="display">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Quantity</th>
+                    <th>Date Added</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for equipment in equipments %}
+                {% if equipment.status == 0 %}
+                <tr>
+                    <td>{{ equipment.id }}</td>
+                    <td><a href="/view_admin_equipment/{{ equipment.id }}">{{ equipment.name }}</a></td>
+                    <td>{{ equipment.quantity}}</td>
+                    <td>{{ equipment.date_added }}</td>
+                </tr>
+                {% endif %}
                 {% endfor %}
             </tbody>
         </table>
@@ -38,7 +60,9 @@
                 <div class="form-container">
                 <form action="/add_equipment/" method="POST">
                     {% csrf_token %}
-                    <label>Name: </label><input name="name" type="text">
+                    <label>Name: </label><input name="name" type="text" placeholder="Enter name" required>
+                    <br>
+                    <label>Quantity: </label><input type="text" name="quantity" placeholder="Enter quantity" required>
                     <br>
                     <label>Status: </label>
                     <br>
