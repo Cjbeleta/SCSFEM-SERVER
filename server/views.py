@@ -251,6 +251,21 @@ def apply_reservation(request, pk):
                 }
                 print (data)
                 response = requests.post('http://localhost:8000/api/reservation/', data=data)
+                day = int(request.POST['start_day'])
+                while day <= int(request.POST['end_day']):
+                    data = {
+                    'info': request.POST['eventname'],
+                    'month': int(request.POST['month']),
+                    'day': day,
+                    'year': 2018,
+                    'time_start': int(request.POST['start_time']),
+                    'time_end': int(request.POST['end_time']),
+                    'item_type': 0,
+                    'item_id': pk
+                    }
+                    url = 'http://localhost:8000/api/schedule/'
+                    response = requests.post(url, data=data)
+                    day = day + 1
                 print (response)
                 return redirect(view_facility, pk)
             elif request.POST['type'] == str(1):
@@ -268,6 +283,21 @@ def apply_reservation(request, pk):
                 }
                 print (data)
                 response = requests.post('http://localhost:8000/api/reservation/', data=data)
+                day = int(request.POST['start_day'])
+                while day <= int(request.POST['end_day']):
+                    data = {
+                    'info': request.POST['quantity'],
+                    'month': int(request.POST['month']),
+                    'day': day,
+                    'year': 2018,
+                    'time_start': int(request.POST['start_time']),
+                    'time_end': int(request.POST['end_time']),
+                    'item_type': 1,
+                    'item_id': pk
+                    }
+                    url = 'http://localhost:8000/api/schedule/'
+                    response = requests.post(url, data=data)
+                    day = day + 1
                 print (response)
                 return redirect(view_equipment, pk)
             return redirect(facility)

@@ -10,7 +10,7 @@ html {
   height: 100%;
 }
 
-body {
+body, div {
   font-family: 'Merriweather', 'Helvetica Neue', Arial, sans-serif;
 }
 
@@ -43,7 +43,7 @@ h3,
 h4,
 h6,
 button,
-label {
+label, div {
   font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
   color: white !important;
 }
@@ -525,4 +525,16 @@ header.masthead p {
 
 .button:hover {
   color: #660000 !important;
+}
+
+.schedule {
+  width: 100%;
+  background-color: white;
+  border: none;
+  padding: 10px;
+  margin-top: 10px;
+}
+
+.schedule-content {
+  color: black !important;
 }

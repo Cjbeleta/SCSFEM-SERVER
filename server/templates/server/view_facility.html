@@ -14,19 +14,33 @@
                 </div>
                 
                 <div class="col-md-9">
+                    <div class="row">
                     <div id="schedule" style="width:100%;"></div>
                     <script>
-                    $(function () {
+
+                    $(function () { 
                         $('#schedule').calendar({
                             months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
                             days: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
                             color: '#660000',
                             onSelect: function(event) {
-                                alert('You selected me, ' + event.label);
+                                $('#schedule-input').val(event.label);
+                                display_schedule();
                             }
                         });
                     });
                     </script>
+                    </div>
+                    <div class="row">
+                        <div class="schedule">
+                            <input id="schedule-input" type="text" style="display: none;">
+                            <div class="form-container-header" id="sched"></div>
+                            <hr>
+                            <div class="schedule-content">
+                                
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -108,4 +122,67 @@
                     </div>
                 </div>
             </div>
+
+<script>
+    var month = ['Month', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+
+    var date = $('#schedule-input').val();
+    var args = date.split('.');
+    $('#sched').text(month[parseInt(args[1])] + ' ' + args[0] + ', ' + args[2]);
+
+    function display_schedule() {
+        // alert('display schedule');
+        if ( $('#schedule-input').val() != date) {
+            // alert('Date has changed.');
+            $('.schedule-content').empty();
+            date = $('#schedule-input').val();
+            var args = date.split('.');
+            $('#sched').text(month[parseInt(args[1])] + ' ' + args[0] + ', ' + args[2]);
+            var url = 'http://localhost:8000/api/schedule?item_type=0&item_id={{ facility.id }}&year='+ parseInt(args[2]) +'&month=' + parseInt(args[1]) + '&day=' + parseInt(args[0])
+            // alert(url);
+
+            $.ajax({
+                url: url,
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+
+                    var start = data[0]['time_start'];
+                    var end = data[0]['time_end'];
+
+                    if (data.length != 0) {
+
+                        if ( (start - 12) < 0) {
+                            start = start.toString() + ':00 AM';
+                        } else if ( (start - 12) > 0 ) {
+                            start = start - 12;
+                            start = start.toString() + ':00 PM';
+                        } else {
+                            start = start.toString() + ':00 NN';
+                        }
+                        // alert(start);
+
+                        if ( (end - 12) < 0) {
+                            end = end.toString() + ':00 AM';
+                        } else if ( (end - 12) > 0 ) {
+                            end = end - 12;
+                            end = end.toString() + ':00 PM';
+                        } else {
+                            end = end.toString() + ':00 NN';
+                        }
+                        // alert(end);
+
+                        $('.schedule-content').append('<div><h5 class="schedule-content">Event: '+ data[0]['info'] +'</h5><h5 class="schedule-content">' + start + ' - ' + end +'</h5></div>');
+                    }
+                    
+                },
+                error: function() {
+                    alert('Failed!');
+                }
+            });
+        }
+    }
+
+</script>
+
     {% endblock %} 
