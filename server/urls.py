@@ -16,6 +16,8 @@ urlpatterns = [
     path('logout/', views.logout),
     # landing route
     path('', views.landing, name='landing'),
+    # landing logout route
+    path('logout_landing/', views.logout_landing),
     # dashboard route
     path('dashboard/', views.dashboard, name='dashboard'),
     # superadmin dashboard route
@@ -64,5 +66,9 @@ urlpatterns = [
     # users list route
     path('users/', views.users),
     # change usertype route
-    path('change_user_type/<str:pk>', views.change_user_type)
+    path('change_user_type/<str:pk>', views.change_user_type),
+    # master logs route
+    path('master_logs/', views.master_logs),
+    # borrower logs
+    path('borrower_logs/', views.borrower_logs)
 ]

@@ -11,6 +11,9 @@ from django.http import HttpResponse
 def landing(request):
     return render(request, 'server/landing.html')
 
+def logout_landing(request):
+    return render(request, 'server/logout.html')
+
 @csrf_exempt
 def login(request):
     if request.method == 'POST':
@@ -37,10 +40,9 @@ def login(request):
     else: 
         return redirect(landing)
 
-# @login_required
 def logout(request):
     django_logout(request)
-    return redirect(landing)
+    return redirect(logout_landing)
 
 
 def admin_dashboard(request):
@@ -61,7 +63,7 @@ def dashboard(request):
         if request.session['user_type'] == 0 or request.session['user_type'] == 1:
             return redirect(admin_dashboard)
         user = request.session['user_id']
-        return render(request, 'server/dashboard.html', {'username': request.session['user_name'], 'date_today': datetime.datetime.today().strftime('%m-%d-%Y')})
+        return render(request, 'server/dashboard.html', {'username': request.session['user_name'], 'date_today': datetime.datetime.today().strftime('%m-%d-%Y'), 'id': request.session['user_id']})
     return redirect(landing)
 
 def facility(request):
@@ -108,6 +110,8 @@ def add_facility(request):
                 print (data)
                 response = requests.post('http://localhost:8000/api/facility/', data=data)
                 print (response)
+                data = {'admin': request.session['user_id'], 'message': 'Added new facility: ' + request.POST['name']}
+                response = requests.post('http://localhost:8000/api/logs/', data=data)
                 return redirect(admin_facility)
             elif request.method == 'GET':
                 return render(request, 'server/add_facility.html')
@@ -123,6 +127,8 @@ def edit_facility(request, pk):
                 data = {'name': request.POST['name'], 'status': request.POST['status']}
                 print (data)
                 edited_facility = requests.put(url, data=data)
+                data = {'admin': request.session['user_id'], 'message': 'Edited facility: ' + request.POST['name']}
+                response = requests.post('http://localhost:8000/api/logs/', data=data)
                 return redirect(admin_facility)
         return redirect(dashboard)
     return redirect(landing)
@@ -169,6 +175,8 @@ def add_equipment(request):
                 print (data)
                 response = requests.post('http://localhost:8000/api/equipment/', data=data)
                 print (response)
+                data = {'admin': request.session['user_id'], 'message': 'Added new equipment: ' + request.POST['name']}
+                response = requests.post('http://localhost:8000/api/logs/', data=data)
                 return redirect(admin_equipment)
         return redirect(dashboard)
     return redirect(landing)
@@ -182,6 +190,8 @@ def edit_equipment(request, pk):
                 data = {'name': request.POST['name'], 'status': request.POST['status']}
                 print (data)
                 edited_equipment = requests.put(url, data=data)
+                data = {'admin': request.session['user_id'], 'message': 'Edited equipment: ' + request.POST['name']}
+                response = requests.post('http://localhost:8000/api/logs/', data=data)
                 return redirect(admin_equipment)
         return redirect(dashboard)
     return redirect(landing)
@@ -203,14 +213,39 @@ def admin_reservation(request):
 def approve_reservation(request, pk):
     if request.session['logged_in']:
         if request.session['user_type'] == 0 or request.session['user_type'] == 1:
-            url = 'http://localhost:8000/api/reservation/' + pk
+            url = 'http://localhost:8000/api/reservation/' + pk + '/'
             response = requests.get(url)
             reservation = response.json()
+            user = requests.get('http://localhost:8000/api/user/' + str(reservation['borrower_id']) + '/')
+            user = user.json()
+            print(user)
+            if reservation['reserve_type'] == 'facility':
+                item = requests.get('http://localhost:8000/api/facility/' + str(reservation['item_id']) + '/')
+                item = item.json()
+                message = 'Approved reservation for event ' + reservation['eventname'] + ' at ' + item['name'] + ' by ' + user['name']
+                print(message)
+                data_log = {
+                    'message': message,
+                    'admin': request.session['user_id'],
+                    'borrower': reservation['borrower_id']
+                }
+                print(data)
+            else:
+                item = requests.get('http://localhost:8000/api/equipment/' + str(reservation['item_id']) + '/')
+                item = item.json()
+                message = 'Approved reservation for quantity ' + str(reservation['quantity']) + ' of ' + item['name'] + ' by ' + user['name']
+                print(message)
+                data_log = { 'message': message,
+                    'admin': request.session['user_id'],
+                    'borrower': reservation['borrower_id']
+                }
+                print(data)
             print(reservation)
             url = 'http://localhost:8000/api/reservation/' + pk + '/'
             data = {'status': 1, 'borrower_id': reservation['borrower_id'], 'item_id': reservation['item_id']}
             response = requests.put(url, data=data)
             print (data)
+            response = requests.post('http://localhost:8000/api/logs/', data=data_log)
             return redirect(admin_reservation)
         return redirect(dashboard)
     return redirect(landing)
@@ -218,13 +253,32 @@ def approve_reservation(request, pk):
 def reject_reservation(request, pk):
     if request.session['logged_in']:
         if request.session['user_type'] == 0 or request.session['user_type'] == 1:
-            url = 'http://localhost:8000/api/reservation/' + pk
+            url = 'http://localhost:8000/api/reservation/' + pk + '/'
             response = requests.get(url)
             reservation = response.json()
+            user = requests.get('http://localhost:8000/api/user/' + str(reservation['borrower_id']) + '/')
+            user = user.json()
+            if reservation['reserve_type'] == 'facility':
+                item = requests.get('http://localhost:8000/api/facility/' + str(reservation['item_id']) + '/')
+                item = item.json()
+                data_log = {
+                    'admin': request.session['user_id'],
+                    'borrower': reservation['borrower_id'],
+                    'message': 'Rejected reservation for event ' + str(reservation['eventname']) + ' at ' + str(item['name']) + ' by ' + str(user['name'])
+                }
+            else:
+                item = requests.get('http://localhost:8000/api/equipment/' + str(reservation['item_id']) + '/')
+                item = item.json()
+                data_log = {
+                    'admin': request.session['user_id'],
+                    'borrower': reservation['borrower_id'],
+                    'message': 'Rejected reservation for quantity ' + str(reservation['quantity']) + ' of ' + item['name'] + ' by ' + user['name']
+                }
             print(reservation)
             url = 'http://localhost:8000/api/reservation/' + pk + '/'
             data = {'status': 2, 'borrower_id': reservation['borrower_id'], 'item_id': reservation['item_id']}
             response = requests.put(url, data=data)
+            response = requests.post('http://localhost:8000/api/logs/', data=data_log)
             print (data)
             return redirect(admin_reservation)
         return redirect(dashboard)
@@ -251,6 +305,13 @@ def apply_reservation(request, pk):
                 }
                 print (data)
                 response = requests.post('http://localhost:8000/api/reservation/', data=data)
+                facility = requests.get('http://localhost:8000/api/facility/' + pk + '/')
+                facility = facility.json()
+                data = {
+                    'borrower': request.session['user_id'],
+                    'message': 'Applied for reservation for event ' + request.POST['eventname'] + ' at ' + facility['name']
+                }
+                response = requests.post('http://localhost:8000/api/logs/', data=data)
                 day = int(request.POST['start_day'])
                 while day <= int(request.POST['end_day']):
                     data = {
@@ -283,6 +344,13 @@ def apply_reservation(request, pk):
                 }
                 print (data)
                 response = requests.post('http://localhost:8000/api/reservation/', data=data)
+                equipment = requests.get('http://localhost:8000/api/equipment/' + pk + '/')
+                equipment = equipment.json()
+                data = {
+                    'borrower': request.session['user_id'],
+                    'message': 'Applied for reservation for quantity ' + request.POST['quantity'] + ' of ' + equipment['name']
+                }
+                response = requests.post('http://localhost:8000/api/logs/', data=data)
                 day = int(request.POST['start_day'])
                 while day <= int(request.POST['end_day']):
                     data = {
@@ -320,6 +388,12 @@ def edit_reservation(request, pk):
             return redirect(admin_dashboard)
         if request.method == 'POST':
             if request.POST['type'] == 'facility':
+                facility = requests.get('http://localhost:8000/api/facility/' + request.POST['item_id'] + '/')
+                facility = facility.json()
+                data = {
+                    'borrower': request.session['user_id'],
+                    'message': 'Edited reservation for ' + facility['name']
+                }
                 data = {
                     'borrower_id': request.session['user_id'],
                     'item_id': request.POST['item_id'],
@@ -331,6 +405,12 @@ def edit_reservation(request, pk):
                     'end_time': request.POST['end_time']
                 }
             else:
+                equipment = requests.get('http://localhost:8000/api/equipment/' + request.POST['item_id'] + '/')
+                equipment = equipment.json()
+                data = {
+                    'borrower': request.session['user_id'],
+                    'message': 'Edited reservation for ' + equipment['name']
+                }
                 data = {
                     'borrower_id': request.session['user_id'],
                     'item_id': request.POST['item_id'],
@@ -345,6 +425,7 @@ def edit_reservation(request, pk):
             url = 'http://localhost:8000/api/reservation/' + pk + '/'
             response = requests.put(url, data=data)
             print(response)
+            response = requests.post('http://localhost:8000/api/logs/', data=data)
             return redirect(reservation_list)
         return redirect(dashboard)
     return redirect(landing)
@@ -354,7 +435,24 @@ def delete_reservation(request, pk):
         if request.session['user_type'] == 0 or request.session['user_type'] == 1:
             return redirect(admin_dashboard)
         url = 'http://localhost:8000/api/reservation/' + pk
+        reservation = requests.get(url)
+        reservation = reservation.json()
+        if reservation['reserve_type'] == 'facility':
+            item = requests.get('http://localhost:8000/api/facility/' + reservation['item_id'] + '/')
+            item = item.json()
+            data = {
+                'borrower': request.session['user_id'],
+                'message': 'Deleted reservation for event ' + reservation['eventname'] + ' at ' + item['name']
+            }
+        else:
+            item = requests.get('http://localhost:8000/api/equipment/' + reservation['item_id'] + '/')
+            item = item.json()
+            data = {
+                'borrower': request.session['user_id'],
+                'message': 'Deleted reservation for quantity ' + str(reservation['quantity']) + ' of ' + item['name']
+            }
         response = requests.delete(url)
+        response = requests.post('http://localhost:8000/api/logs/', data=data)
         return redirect(reservation_list)
     return redirect(landing)
 
@@ -373,6 +471,25 @@ def check_reservation(request, pk):
                     'status': 3
                 }
                 response = requests.put(url, data=data)
+                borrower = requests.get('http://localhost:8000/api/user/' + str(reservation['borrower_id']) + '/')
+                borrower = borrower.json()
+                if reservation['reserve_type'] == 'facility':
+                    item = requests.get('http://localhost:8000/api/facility/' + str(reservation['item_id']) + '/')
+                    item = item.json()
+                    data = {
+                        'admin': request.session['user_id'],
+                        'borrower': reservation['borrower_id'],
+                        'message': 'Marked as completed the reservation for event ' + reservation['eventname'] + ' at ' + item['name'] + ' by ' + borrower['name']
+                    }
+                else:
+                    item = requests.get('http://localhost:8000/api/equipment/' + str(reservation['item_id']) + '/')
+                    item = item.json()
+                    data = {
+                        'admin': request.session['user_id'],
+                        'borrower': reservation['borrower_id'],
+                        'message': 'Marked as completed the reservation for quantity ' + str(reservation['quantity']) + ' of ' + item['name'] + ' by ' + borrower['name']
+                    }
+                response = requests.post('http://localhost:8000/api/logs/', data=data)
                 return redirect(admin_reservation)
             return redirect(admin_dashboard)
         return redirect(dashboard)
@@ -402,7 +519,36 @@ def change_user_type(request, pk):
                     'usertype': request.POST['usertype']
                 }
                 response = requests.put(url, data=data)
+                if request.POST['usertype'] == 0:
+                    usertype = 'Superadmin'
+                elif request.POST['usertype'] == 1:
+                    usertype = 'Subadmin'
+                else:
+                    usertype = 'Borrower'
+                data = {
+                    'admin': request.session['user_id'],
+                    'message': request.session['username'] + ' changed ' + user['name'] + ' status to ' + usertype
+                }
+                response = requests.post('http://localhost:8000/api/logs/', data=data)
                 return redirect(users)
             return redirect(admin_dashboard)
         return redirect(dashboard)
+    return redirect(landing)
+
+def master_logs(request):
+    if request.session['logged_in']:
+        if request.session['user_type'] == 0 or request.session['user_type'] == 1:
+            logs = requests.get('http://localhost:8000/api/logs/')
+            logs = logs.json()
+            return render(request, 'server/logs.html', {'logs': logs})
+        return redirect(dashboard)
+    return redirect(landing)
+
+def borrower_logs(request):
+    if request.session['logged_in']:
+        if request.session['user_type'] == 0 or request.session['user_type'] == 1:
+            return redirect(admin_dashboard)
+        logs = requests.get('http://localhost:8000/api/logs?borrower=' + str(request.session['user_id']))
+        logs = logs.json()
+        return render(request, 'server/logs.html', {'logs': logs})
     return redirect(landing)

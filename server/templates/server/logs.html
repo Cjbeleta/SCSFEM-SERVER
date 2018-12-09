@@ -1,0 +1,27 @@
+{% extends 'server/admin_master.html' %}
+
+    {% block title %}
+    Logs
+    {% endblock %}
+    
+    {% block content %}
+        <table id="logs" class="display">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Date</th>
+                    <th>Message</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for log in logs %}
+                <tr>
+                    <td>{{ log.id }}</td>
+                    <td>{{ log.date }}</td>
+                    <td>{{ log.message }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <br>
+    {% endblock %}
